@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grocery List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+
+<body>
+    <div id="app">
+        <h1 class="text-2xl font-bold mb-4 text-center">Grocery List</h1>
+
+        <div class="mb-4">
+            <label class="block mb-1">Item: </label>
+            <input v-model="newItem" type="text" placeholder="Enter grocery item" class="border p-2 w-full">
+        </div>
+
+        <div class="mb-4">
+            <label class="block mb-1">Quantity: </label>
+            <input v-model="newQuantity" type="number" min="1" placeholder="Enter quantity" class="border p-2 w-full">
+        </div>
+
+        <div class="mb-4">
+            <button @click="addItem" class="bg-green-600 text-white px-4 py-2 rounded">Add to list</button>
+            <button @click="resetList" class="bg-red-600 text-white px-4 py-2 ml-2 rounded">Clear List</button>
+        </div>
+
+        <div v-if="groceryList.length">
+            <ul>
+                <li v-for="(item, index) in groceryList" :key="index" class="mb-2 flex items-center">
+                    <input type="checkbox" v-model="item.done" class="mr-2">
+                    <span :style="{ textDecoration: item.done ? 'line-through' : 'none' }" class="flex-grow">
+                        {{ item.name }} ({{ item.quantity }})
+                    </span>
+                    <button @click="removeItem(index)" class="bg-red-400 text-white px-2 py-1 rounded">Remove</button>
+                </li>
+            </ul>
+        </div>
+
+        <div v-else class="text-center">
+            No items in your grocery list.
+        </div>
+    </div>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    newItem: '',
+                    newQuantity: 1,
+                    groceryList: []
+                };
+            },
+            methods: {
+                addItem() {
+                    if (this.newItem && this.newQuantity > 0) {
+                        this.groceryList.push({
+                            name: this.newItem,
+                            quantity: this.newQuantity,
+                            done: false
+                        });
+                        this.newItem = '';
+                        this.newQuantity = 1;
+                    }
+                },
+                removeItem(index) {
+                    this.groceryList.splice(index, 1);
+                },
+                resetList() {
+                    this.groceryList = [];
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
